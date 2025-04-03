@@ -1,14 +1,14 @@
-import querystring from 'querystring';
-
 export default function handler(req, res) {
-  const shop = req.query.shop;
-  const redirectUri = `${process.env.SHOPIFY_APP_URL}/api/auth-callback`;
+  const { shop } = req.query;
 
-  const installUrl = `https://${shop}/admin/oauth/authorize?` + querystring.stringify({
-    client_id: process.env.SHOPIFY_API_KEY,
-    scope: process.env.SHOPIFY_SCOPES,
-    redirect_uri: redirectUri,
-  });
+  if (!shop) {
+    return res.status(400).send('Missing shop parameter');
+  }
+
+  const redirectUri = `${process.env.SHOPIFY_APP_URL}/api/auth/callback`;
+  const installUrl = `https://${shop}/admin/oauth/authorize?client_id=${process.env.SHOPIFY_API_KEY}&scope=${process.env.SHOPIFY_SCOPES}&redirect_uri=${redirectUri}`;
 
   res.redirect(installUrl);
+}
+
 }
