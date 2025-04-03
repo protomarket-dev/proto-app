@@ -1,0 +1,14 @@
+import axios from 'axios';
+
+export default async function handler(req, res) {
+  const { shop, code } = req.query;
+
+  const response = await axios.post(`https://${shop}/admin/oauth/access_token`, {
+    client_id: process.env.SHOPIFY_API_KEY,
+    client_secret: process.env.SHOPIFY_API_SECRET,
+    code,
+  });
+
+  const accessToken = response.data.access_token;
+  res.status(200).send(`✅ 인증 성공! 액세스 토큰: ${accessToken}`);
+}
